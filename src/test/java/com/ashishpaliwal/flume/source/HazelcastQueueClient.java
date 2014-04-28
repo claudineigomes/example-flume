@@ -1,9 +1,7 @@
 package com.ashishpaliwal.flume.source;
 
-import com.hazelcast.client.ClientConfig;
 import com.hazelcast.client.HazelcastClient;
-import com.hazelcast.config.Config;
-import com.hazelcast.core.Hazelcast;
+import com.hazelcast.client.config.ClientConfig;
 import com.hazelcast.core.HazelcastInstance;
 
 import java.util.concurrent.BlockingQueue;
@@ -15,7 +13,7 @@ public class HazelcastQueueClient {
 
     private BlockingQueue<String> distributedQueue;
 
-    private HazelcastClient hazelcastClient;
+    private HazelcastInstance hazelcastClient;
 
     /**
      * Initialize
@@ -23,7 +21,7 @@ public class HazelcastQueueClient {
     public void init(String queueName) {
         ClientConfig clientConfig = new ClientConfig();
         clientConfig.getGroupConfig().setName("dev").setPassword("dev-pass");
-        clientConfig.addAddress("127.0.01");
+        clientConfig.getNetworkConfig().addAddress("127.0.01");
         hazelcastClient = HazelcastClient.newHazelcastClient(clientConfig);
         distributedQueue = hazelcastClient.getQueue(queueName);
     }

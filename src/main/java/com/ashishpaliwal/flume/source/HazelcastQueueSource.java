@@ -1,14 +1,15 @@
 package com.ashishpaliwal.flume.source;
 
-import com.hazelcast.client.ClientConfig;
 import com.hazelcast.client.HazelcastClient;
+import com.hazelcast.client.config.ClientConfig;
+import com.hazelcast.core.HazelcastInstance;
 import org.apache.flume.Context;
+import org.apache.flume.Event;
 import org.apache.flume.EventDeliveryException;
 import org.apache.flume.PollableSource;
 import org.apache.flume.conf.Configurable;
 import org.apache.flume.event.EventBuilder;
 import org.apache.flume.source.AbstractSource;
-import org.apache.flume.Event;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +28,7 @@ public class HazelcastQueueSource extends AbstractSource implements Configurable
     private BlockingQueue<String> distributedQueue;
 
     // Hazelcast client
-    private HazelcastClient hazelcastClient;
+    private HazelcastInstance hazelcastClient;
 
     // Properties for Hazelcast
     private String queueName;
@@ -48,7 +49,7 @@ public class HazelcastQueueSource extends AbstractSource implements Configurable
     public synchronized void start() {
         ClientConfig clientConfig = new ClientConfig();
         clientConfig.getGroupConfig().setName(userName).setPassword(userPwd);
-        clientConfig.addAddress(serverIP);
+        clientConfig.getNetworkConfig().addAddress(serverIP);
         hazelcastClient = HazelcastClient.newHazelcastClient(clientConfig);
         distributedQueue = hazelcastClient.getQueue(queueName);
     }
