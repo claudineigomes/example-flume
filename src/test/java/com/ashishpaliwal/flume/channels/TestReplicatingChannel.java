@@ -70,69 +70,6 @@ public class TestReplicatingChannel {
     transaction.commit();
   }
 
-  @Test
-  public void testChannelResize() {
-    Context context = new Context();
-    Map<String, String> parms = new HashMap<String, String>();
-    parms.put("capacity", "5");
-    parms.put("transactionCapacity", "5");
-    context.putAll(parms);
-    Configurables.configure(channel,  context);
-
-    Transaction transaction = channel.getTransaction();
-    transaction.begin();
-    for(int i=0; i < 5; i++) {
-      channel.put(EventBuilder.withBody(String.format("test event %d", i).getBytes()));
-    }
-    transaction.commit();
-    transaction.close();
-
-    /*
-     * Verify overflow semantics
-     */
-    transaction = channel.getTransaction();
-    boolean overflowed = false;
-    try {
-      transaction.begin();
-      channel.put(EventBuilder.withBody("overflow event".getBytes()));
-      transaction.commit();
-    } catch (ChannelException e) {
-      overflowed = true;
-      transaction.rollback();
-    } finally {
-      transaction.close();
-    }
-    Assert.assertTrue(overflowed);
-
-    /*
-     * Reconfigure capacity down and add another event, shouldn't result in exception
-     */
-    parms.put("capacity", "6");
-    context.putAll(parms);
-    Configurables.configure(channel, context);
-    transaction = channel.getTransaction();
-    transaction.begin();
-    channel.put(EventBuilder.withBody("extended capacity event".getBytes()));
-    transaction.commit();
-    transaction.close();
-
-    /*
-     * Attempt to reconfigure capacity to below current entry count and verify
-     * it wasn't carried out
-     */
-    parms.put("capacity", "2");
-    parms.put("transactionCapacity", "2");
-    context.putAll(parms);
-    Configurables.configure(channel, context);
-    for(int i=0; i < 6; i++) {
-      transaction = channel.getTransaction();
-      transaction.begin();
-      Assert.assertNotNull(channel.take());
-      transaction.commit();
-      transaction.close();
-    }
-  }
-
   @Test(expected=ChannelException.class)
   public void testTransactionPutCapacityOverload() {
     Context context = new Context();
