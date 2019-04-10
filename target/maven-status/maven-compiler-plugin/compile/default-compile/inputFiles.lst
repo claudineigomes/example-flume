@@ -1,0 +1,9 @@
+/home/claudinei/Projetos/pessoais/flume/flume-cookbook/src/main/java/com/ashishpaliwal/flume/examples/Log4jAppenderExample.java
+/home/claudinei/Projetos/pessoais/flume/flume-cookbook/src/main/java/com/ashishpaliwal/flume/source/HazelcastQueueSource.java
+/home/claudinei/Projetos/pessoais/flume/flume-cookbook/src/main/java/com/ashishpaliwal/flume/ZookeeperUploader.java
+/home/claudinei/Projetos/pessoais/flume/flume-cookbook/src/main/java/com/ashishpaliwal/flume/channels/ReplicatingChannel.java
+/home/claudinei/Projetos/pessoais/flume/flume-cookbook/src/main/java/com/ashishpaliwal/flume/channels/KryoEventSerializer.java
+/home/claudinei/Projetos/pessoais/flume/flume-cookbook/src/main/java/com/ashishpaliwal/flume/channels/EventSerializer.java
+/home/claudinei/Projetos/pessoais/flume/flume-cookbook/src/main/java/com/ashishpaliwal/flume/interceptors/AbstractFlumeInterceptor.java
+/home/claudinei/Projetos/pessoais/flume/flume-cookbook/src/main/java/com/ashishpaliwal/flume/channels/ChannelConstants.java
+/home/claudinei/Projetos/pessoais/flume/flume-cookbook/src/main/java/com/ashishpaliwal/flume/interceptors/HostTimeInterceptor.java

@@ -13,6 +13,7 @@ import org.apache.flume.source.AbstractSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -28,7 +29,7 @@ public class HazelcastQueueSource extends AbstractSource implements Configurable
     private BlockingQueue<String> distributedQueue;
 
     // Hazelcast client
-    private HazelcastInstance hazelcastClient;
+//    private HazelcastInstance hazelcastClient;
 
     // Properties for Hazelcast
     private String queueName;
@@ -47,18 +48,19 @@ public class HazelcastQueueSource extends AbstractSource implements Configurable
 
     @Override
     public synchronized void start() {
-        ClientConfig clientConfig = new ClientConfig();
+        /*ClientConfig clientConfig = new ClientConfig();
         clientConfig.getGroupConfig().setName(userName).setPassword(userPwd);
         clientConfig.getNetworkConfig().addAddress(serverIP);
         hazelcastClient = HazelcastClient.newHazelcastClient(clientConfig);
-        distributedQueue = hazelcastClient.getQueue(queueName);
+        distributedQueue = hazelcastClient.getQueue(queueName);*/
     }
 
 
 
     @Override
     public synchronized void stop() {
-        hazelcastClient.shutdown();
+//        hazelcastClient.shutdown();
+        LOGGER.info("STOP");
     }
 
     @Override
@@ -66,14 +68,27 @@ public class HazelcastQueueSource extends AbstractSource implements Configurable
         Status status = Status.READY;
 
         try {
-            String msg = distributedQueue.poll(1000, TimeUnit.MILLISECONDS);
+            File file = new File("/home/claudinei/teste");
+            FileInputStream fis = new FileInputStream(file);
+            byte[] data = new byte[(int) file.length()];
+            fis.read(data);
+            fis.close();
+
+            LOGGER.info("ESTOU AQUI");
+            String msg = new String(data, "UTF-8");
             // not using charset here.
             if(msg == null) {
                 return Status.BACKOFF;
             }
             Event event = EventBuilder.withBody(msg.getBytes());
             getChannelProcessor().processEvent(event);
-        } catch (InterruptedException e) {
+        } catch (UnsupportedEncodingException e) {
+            LOGGER.error("", e);
+            status = Status.BACKOFF;
+        } catch (FileNotFoundException e) {
+            LOGGER.error("", e);
+            status = Status.BACKOFF;
+        } catch (IOException e) {
             LOGGER.error("", e);
             status = Status.BACKOFF;
         }
